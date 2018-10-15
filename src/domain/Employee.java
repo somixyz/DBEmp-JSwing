@@ -13,11 +13,11 @@ public class Employee implements Serializable{
     private String id, fullName, workplace, date;
     private byte[] image;
 
-    public Employee(String id, String fullName, String workplace, String dateOfdatEmployment, byte[] image) {
+    public Employee(String id, String fullName, String workplace, String dateOfEmployment, byte[] image) {
         this.id = id;
         this.fullName = fullName;
         this.workplace = workplace;
-        this.date = dateOfdatEmployment;
+        this.date = dateOfEmployment;
         this.image = image;
     }
 
@@ -53,11 +53,11 @@ public class Employee implements Serializable{
         this.workplace = workplace;
     }
 
-    public String getDateOfdatEmployment() {
+    public String getDateOfEmployment() {
         return date;
     }
 
-    public void setDateOfdatEmployment(String dateOfdatEmployment) {
+    public void setDateOfEmployment(String dateOfdatEmployment) {
         this.date = dateOfdatEmployment;
     }
     

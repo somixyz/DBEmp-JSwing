@@ -5,8 +5,10 @@
  */
 package view;
 
+import domain.Collective;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import util.ImageUtil;
 
 /**
  *
@@ -14,13 +16,17 @@ import javax.swing.JOptionPane;
  */
 public class EmployeeGUI extends javax.swing.JFrame {
 
+    Collective collective = new Collective("Working collective");
     /**
      * Creates new form EmployeeGUI
      */
     public EmployeeGUI() {
         initComponents();
-        this.setIconImage(new ImageIcon(getClass().getResource("../icon/icon.png")).getImage());
-        
+        this.setIconImage(new ImageIcon(getClass().getResource("/icon/icon.png")).getImage());
+        this.collective.load(table);
+        setTable();
+        lNumData.setText("Number of data "+ String.valueOf(table.getRowCount()));
+
     }
 
     /**
@@ -50,14 +56,26 @@ public class EmployeeGUI extends javax.swing.JFrame {
         lClearImage = new javax.swing.JLabel();
         lImage = new javax.swing.JLabel();
         panelSearch = new javax.swing.JPanel();
+        lSearch = new javax.swing.JLabel();
+        cbTypeSearch = new javax.swing.JComboBox<>();
+        tfSearch = new javax.swing.JTextField();
+        lNumData = new javax.swing.JLabel();
+        lTimeSearch = new javax.swing.JLabel();
+        btnPrint = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        table = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         mEdit = new javax.swing.JMenu();
         mExit = new javax.swing.JMenuItem();
         mFile = new javax.swing.JMenu();
         mAbout = new javax.swing.JMenuItem();
         mDeleteAll = new javax.swing.JMenuItem();
+        mData = new javax.swing.JMenu();
+        mExportData = new javax.swing.JMenu();
+        mCSVData = new javax.swing.JMenuItem();
+        mImportData = new javax.swing.JMenu();
+        mCSVImport = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DB Employees");
@@ -94,37 +112,48 @@ public class EmployeeGUI extends javax.swing.JFrame {
         jPanel1.add(jLabel1);
         jLabel1.setBounds(20, 140, 110, 30);
 
-        tfID.setText(" ");
+        tfID.setEditable(false);
         jPanel1.add(tfID);
         tfID.setBounds(130, 20, 220, 30);
 
-        tfDate.setText(" ");
+        tfDate.setEditable(false);
         jPanel1.add(tfDate);
         tfDate.setBounds(130, 140, 220, 30);
-
-        tfFullName1.setText(" ");
         jPanel1.add(tfFullName1);
         tfFullName1.setBounds(130, 60, 220, 30);
-
-        tfWokrplace.setText(" ");
         jPanel1.add(tfWokrplace);
         tfWokrplace.setBounds(130, 100, 220, 30);
 
         btnDelete.setBackground(new java.awt.Color(204, 0, 0));
         btnDelete.setForeground(new java.awt.Color(255, 255, 255));
         btnDelete.setText(" Delete ");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnDelete);
         btnDelete.setBounds(250, 190, 100, 30);
 
         btnAdd.setBackground(new java.awt.Color(0, 0, 153));
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
         btnAdd.setText(" Add ");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnAdd);
         btnAdd.setBounds(20, 190, 100, 30);
 
         btnEdit.setBackground(new java.awt.Color(0, 153, 0));
         btnEdit.setForeground(new java.awt.Color(255, 255, 255));
         btnEdit.setText(" Edit ");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnEdit);
         btnEdit.setBounds(135, 190, 100, 30);
 
@@ -137,11 +166,27 @@ public class EmployeeGUI extends javax.swing.JFrame {
 
         lAddImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lAddImage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lAddImage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lAddImageMouseEntered(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                lAddImageMouseReleased(evt);
+            }
+        });
         panelImage.add(lAddImage);
         lAddImage.setBounds(25, 185, 30, 30);
 
         lClearImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lClearImage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lClearImage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lClearImageMouseEntered(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                lClearImageMouseReleased(evt);
+            }
+        });
         panelImage.add(lClearImage);
         lClearImage.setBounds(185, 185, 30, 30);
 
@@ -163,33 +208,73 @@ public class EmployeeGUI extends javax.swing.JFrame {
 
         panelSearch.setBackground(new java.awt.Color(255, 255, 255));
         panelSearch.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 1, true));
+        panelSearch.setLayout(null);
 
-        javax.swing.GroupLayout panelSearchLayout = new javax.swing.GroupLayout(panelSearch);
-        panelSearch.setLayout(panelSearchLayout);
-        panelSearchLayout.setHorizontalGroup(
-            panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 638, Short.MAX_VALUE)
-        );
-        panelSearchLayout.setVerticalGroup(
-            panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 48, Short.MAX_VALUE)
-        );
+        lSearch.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/table-tabs.png"))); // NOI18N
+        lSearch.setText(" ");
+        panelSearch.add(lSearch);
+        lSearch.setBounds(20, 10, 30, 30);
+
+        cbTypeSearch.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Start with","Contains" }));
+        panelSearch.add(cbTypeSearch);
+        cbTypeSearch.setBounds(50, 10, 120, 30);
+
+        tfSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfSearchKeyReleased(evt);
+            }
+        });
+        panelSearch.add(tfSearch);
+        tfSearch.setBounds(175, 10, 150, 30);
+
+        lNumData.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        lNumData.setText("Num of data: ");
+        panelSearch.add(lNumData);
+        lNumData.setBounds(330, 10, 130, 15);
+
+        lTimeSearch.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        lTimeSearch.setText("Time of searching: ");
+        panelSearch.add(lTimeSearch);
+        lTimeSearch.setBounds(330, 25, 130, 15);
+
+        btnPrint.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        btnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/print.png"))); // NOI18N
+        btnPrint.setText(" Print ");
+        panelSearch.add(btnPrint);
+        btnPrint.setBounds(520, 10, 110, 30);
+
+        btnRefresh.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        btnRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refresh.png"))); // NOI18N
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+        panelSearch.add(btnRefresh);
+        btnRefresh.setBounds(480, 10, 30, 30);
 
         panelBackground.add(panelSearch);
         panelSearch.setBounds(20, 260, 640, 50);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Full name", "Workplace", "Date"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tableMouseReleased(evt);
+            }
+        });
+        table.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tableKeyReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(table);
 
         panelBackground.add(jScrollPane1);
         jScrollPane1.setBounds(20, 320, 640, 230);
@@ -231,6 +316,41 @@ public class EmployeeGUI extends javax.swing.JFrame {
 
         jMenuBar1.add(mFile);
 
+        mData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/dbtable.png"))); // NOI18N
+        mData.setText(" Data ");
+
+        mExportData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/dexport.png"))); // NOI18N
+        mExportData.setText(" Export data ");
+
+        mCSVData.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        mCSVData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/csv.png"))); // NOI18N
+        mCSVData.setText(" CSV");
+        mCSVData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mCSVDataActionPerformed(evt);
+            }
+        });
+        mExportData.add(mCSVData);
+
+        mData.add(mExportData);
+
+        mImportData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/import.png"))); // NOI18N
+        mImportData.setText("Import data ");
+
+        mCSVImport.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        mCSVImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/csv.png"))); // NOI18N
+        mCSVImport.setText(" CSV ");
+        mCSVImport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mCSVImportActionPerformed(evt);
+            }
+        });
+        mImportData.add(mCSVImport);
+
+        mData.add(mImportData);
+
+        jMenuBar1.add(mData);
+
         setJMenuBar(jMenuBar1);
 
         pack();
@@ -256,6 +376,75 @@ public class EmployeeGUI extends javax.swing.JFrame {
         this.lAddImage.setIcon(null);
         this.lClearImage.setIcon(null);
     }//GEN-LAST:event_lImageMouseExited
+
+    private void lAddImageMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lAddImageMouseReleased
+        ImageUtil img = new ImageUtil();
+        img.chooseImage(lAddImage, lClearImage, lImage);
+    }//GEN-LAST:event_lAddImageMouseReleased
+
+    private void lClearImageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lClearImageMouseEntered
+        lImageMouseEntered(evt);
+    }//GEN-LAST:event_lClearImageMouseEntered
+
+    private void lAddImageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lAddImageMouseEntered
+        lImageMouseEntered(evt);
+    }//GEN-LAST:event_lAddImageMouseEntered
+
+    private void lClearImageMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lClearImageMouseReleased
+        ImageUtil img = new ImageUtil();
+        img.deleteImage(lAddImage, lClearImage, lImage);
+        
+    }//GEN-LAST:event_lClearImageMouseReleased
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        try{
+            ImageUtil i = new ImageUtil(); 
+            collective.enterData(tfID, tfFullName1, tfWokrplace, tfDate, lImage, tfSearch, lNumData, lTimeSearch, table, i.getBytesOfImage(lImage));
+            lNumData.setText("Number of data "+ String.valueOf(table.getRowCount()));
+        
+        }catch(Exception e){
+        }
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void tableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseReleased
+        if(this.table.getSelectedRow()!=-1){
+            this.collective.showDataEmployee(table, tfID, tfFullName1, tfWokrplace, tfDate, lImage);
+        }
+    }//GEN-LAST:event_tableMouseReleased
+
+    private void tableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyReleased
+        if(this.table.getSelectedRow()!=-1){
+            this.collective.showDataEmployee(table, tfID, tfFullName1, tfWokrplace, tfDate, lImage);
+        }
+    }//GEN-LAST:event_tableKeyReleased
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        this.collective.edit(tfID, tfFullName1, tfWokrplace, tfDate, lImage, tfSearch, lNumData, lTimeSearch, table);
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void tfSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfSearchKeyReleased
+        this.collective.search(this.tfSearch.getText(), cbTypeSearch, table, lTimeSearch, lNumData);
+    }//GEN-LAST:event_tfSearchKeyReleased
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        if(this.table.getSelectedRow()!=-1){
+            this.collective.delete(String.valueOf(table.getValueAt(this.table.getSelectedRow(), 0)), table, lNumData);
+            this.collective.refreshGUI(tfID, tfFullName1, tfWokrplace, tfDate, lImage, tfSearch, lNumData, lTimeSearch);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        this.collective.refreshGUI(tfID, tfFullName1, tfWokrplace, tfDate, lImage, tfSearch, lNumData, lTimeSearch);
+        this.collective.showDataInTable(table);
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void mCSVDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCSVDataActionPerformed
+        this.collective.exportCSV(this);
+    }//GEN-LAST:event_mCSVDataActionPerformed
+
+    private void mCSVImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mCSVImportActionPerformed
+        this.collective.importCSV(table, this);
+    }//GEN-LAST:event_mCSVImportActionPerformed
 
     /**
      * @param args the command line arguments
@@ -296,28 +485,48 @@ public class EmployeeGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnPrint;
+    private javax.swing.JButton btnRefresh;
+    private javax.swing.JComboBox<String> cbTypeSearch;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lAddImage;
     private javax.swing.JLabel lClearImage;
     private javax.swing.JLabel lFullName;
     private javax.swing.JLabel lId;
     private javax.swing.JLabel lImage;
+    private javax.swing.JLabel lNumData;
+    private javax.swing.JLabel lSearch;
+    private javax.swing.JLabel lTimeSearch;
     private javax.swing.JLabel lWorkplace;
     private javax.swing.JMenuItem mAbout;
+    private javax.swing.JMenuItem mCSVData;
+    private javax.swing.JMenuItem mCSVImport;
+    private javax.swing.JMenu mData;
     private javax.swing.JMenuItem mDeleteAll;
     private javax.swing.JMenu mEdit;
     private javax.swing.JMenuItem mExit;
+    private javax.swing.JMenu mExportData;
     private javax.swing.JMenu mFile;
+    private javax.swing.JMenu mImportData;
     private javax.swing.JPanel panelBackground;
     private javax.swing.JPanel panelImage;
     private javax.swing.JPanel panelSearch;
+    private javax.swing.JTable table;
     private javax.swing.JTextField tfDate;
     private javax.swing.JTextField tfFullName1;
     private javax.swing.JTextField tfID;
+    private javax.swing.JTextField tfSearch;
     private javax.swing.JTextField tfWokrplace;
     // End of variables declaration//GEN-END:variables
+
+    private void setTable() {
+        this.table.setShowGrid(true);
+        this.table.getColumnModel().getColumn(0).setPreferredWidth(110);
+        this.table.getColumnModel().getColumn(1).setPreferredWidth(195);
+        this.table.getColumnModel().getColumn(2).setPreferredWidth(195);
+        this.table.getColumnModel().getColumn(3).setPreferredWidth(140);
+    }
 }
