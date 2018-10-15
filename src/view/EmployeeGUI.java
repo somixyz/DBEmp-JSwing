@@ -79,7 +79,7 @@ public class EmployeeGUI extends javax.swing.JFrame {
         mCSVImport = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("S/D-DBEmp");
+        setTitle("S/D-DBEmp app v.1.0");
         setMaximumSize(new java.awt.Dimension(690, 620));
         setMinimumSize(new java.awt.Dimension(690, 620));
         setPreferredSize(new java.awt.Dimension(690, 620));
@@ -373,7 +373,7 @@ public class EmployeeGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_mExitActionPerformed
 
     private void mAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAboutActionPerformed
-        JOptionPane.showMessageDialog(rootPane, "This is Database application about Employee");
+        JOptionPane.showMessageDialog(rootPane, "This is S/D Database application about Employees");
     }//GEN-LAST:event_mAboutActionPerformed
 
     private void lImageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lImageMouseEntered
