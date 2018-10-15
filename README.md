@@ -13,8 +13,7 @@ Database simulation using Serialize/Deserialize methods, where all data are stor
 	- Enabled import data from CSV file
 	
 ---------------------------------------------------------------
----------------------------------------------------------------
-############################################################### 
+--------------------------------------------------------------- 
 
 ![sssssssss](https://user-images.githubusercontent.com/24499407/46981035-da5e6c00-d0d6-11e8-8e02-9e7f6c4ec2aa.jpg)
 
