@@ -1,6 +1,9 @@
 
 package domain;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,14 +22,21 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Cell;
 import util.ImageUtil;
 
 /**
@@ -298,6 +308,9 @@ public class Collective {
         numData.setText("Number of data: "+table.getRowCount());
         serialize(collective);
     }
+    
+    /** Export file from ArrayList into Excel file, excel 2003 with extenstion xls
+     */
     public void exportCSV(JFrame frame){
         JFileChooser jfc = new JFileChooser(".");
         int r = jfc.showSaveDialog(frame);
@@ -343,10 +356,77 @@ public class Collective {
                 JOptionPane.showMessageDialog(null, "You successfully imported your data", "INFO", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception e) {
                JOptionPane.showMessageDialog(null, "Here is some error", "INFO",JOptionPane.ERROR_MESSAGE); 
-            }
-        
-        }
-        
+            } 
+        }  
     }
+    public void exportExcel2003(){
+        ImageIcon bigIcon = new ImageIcon(getClass().getResource("/icon/excel03-64.png"));
+        ImageIcon smallIcon = new ImageIcon(getClass().getResource("/icon/excel03.png"));
+        
+        JTextField nameFile = new JTextField(10);
+        JTextField nameList = new JTextField(10);
+        
+        JPanel tfPanel = new JPanel(new BorderLayout());
+        JPanel labelPanel = new JPanel(new BorderLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        
+        tfPanel.add(nameFile, BorderLayout.NORTH);
+        tfPanel.add(nameList, BorderLayout.SOUTH);
+        
+        labelPanel.add(new JLabel("<html>Name file:<br><br>Name list:</html>"),BorderLayout.CENTER);
+        
+        mainPanel.add(tfPanel,BorderLayout.EAST);
+        mainPanel.add(labelPanel, BorderLayout.WEST);
+        
+        Object[] options = {"Export", "Give up"};
+        int dialog = JOptionPane.showOptionDialog(null, mainPanel, "Enter name of file and list", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, bigIcon, options, options[0]);
+        if(dialog == JOptionPane.OK_OPTION){
+            try {
+                Workbook wb = new HSSFWorkbook();
+                Sheet list = wb.createSheet();
+                for (int i = 0; i < collective.size(); i++) {
+                    Row row = list.createRow(i);
+                    Cell cell = row.createCell(0);
+                    cell.setCellValue(collective.get(i).getId());
+                    cell = row.createCell(1);
+                    cell.setCellValue(collective.get(i).getFullName());
+                    cell = row.createCell(2);
+                    cell.setCellValue(collective.get(i).getWorkplace());
+                    cell = row.createCell(3);
+                    cell.setCellValue(collective.get(i).getDateOfEmployment());
+                    if(i==65535) { 
+                        break;
+                    }
+                }
+                JFileChooser jfc = new JFileChooser(new File(".")){
+                    @Override
+                    protected JDialog createDialog(Component parent )throws HeadlessException {
+                        JDialog dialog = super.createDialog(parent);
+                        dialog.setTitle("Saved");
+                        dialog.setIconImage(smallIcon.getImage());
+                        return dialog;
+                    }};
+                    jfc.setSelectedFile(new File(nameFile.getText()+".xls"));
+                    int save = jfc.showSaveDialog(null);
+                    if(save==JFileChooser.APPROVE_OPTION){
+                        File file = jfc.getSelectedFile();
+                        FileOutputStream fos = new FileOutputStream(file);
+                        wb.write(fos);
+                        fos.close();
+                        wb.close();
+                        JOptionPane.showMessageDialog(null, "You successfully exported your data","INFO",JOptionPane.INFORMATION_MESSAGE,bigIcon);
+                        
+                    } 
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Here is some Error", "INFO",JOptionPane.ERROR_MESSAGE);
+            }
+        }  
+    }
+    
+    
+    
+    
+    
+    
     
 }

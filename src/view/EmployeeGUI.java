@@ -74,11 +74,12 @@ public class EmployeeGUI extends javax.swing.JFrame {
         mData = new javax.swing.JMenu();
         mExportData = new javax.swing.JMenu();
         mCSVData = new javax.swing.JMenuItem();
+        mExportExcel03 = new javax.swing.JMenuItem();
         mImportData = new javax.swing.JMenu();
         mCSVImport = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("DB Employees");
+        setTitle("S/D-DBEmp");
         setMaximumSize(new java.awt.Dimension(690, 620));
         setMinimumSize(new java.awt.Dimension(690, 620));
         setPreferredSize(new java.awt.Dimension(690, 620));
@@ -332,6 +333,16 @@ public class EmployeeGUI extends javax.swing.JFrame {
         });
         mExportData.add(mCSVData);
 
+        mExportExcel03.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        mExportExcel03.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/excel03.png"))); // NOI18N
+        mExportExcel03.setText("  Excel 03 (xls)");
+        mExportExcel03.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mExportExcel03ActionPerformed(evt);
+            }
+        });
+        mExportData.add(mExportExcel03);
+
         mData.add(mExportData);
 
         mImportData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/import.png"))); // NOI18N
@@ -446,6 +457,10 @@ public class EmployeeGUI extends javax.swing.JFrame {
         this.collective.importCSV(table, this);
     }//GEN-LAST:event_mCSVImportActionPerformed
 
+    private void mExportExcel03ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mExportExcel03ActionPerformed
+           this.collective.exportExcel2003();
+    }//GEN-LAST:event_mExportExcel03ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -509,6 +524,7 @@ public class EmployeeGUI extends javax.swing.JFrame {
     private javax.swing.JMenu mEdit;
     private javax.swing.JMenuItem mExit;
     private javax.swing.JMenu mExportData;
+    private javax.swing.JMenuItem mExportExcel03;
     private javax.swing.JMenu mFile;
     private javax.swing.JMenu mImportData;
     private javax.swing.JPanel panelBackground;
